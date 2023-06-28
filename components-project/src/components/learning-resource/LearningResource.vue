@@ -5,7 +5,7 @@
       <header>
         <h3>{{ title }}</h3>
         <!-- imported on Main.js -->
-        <base-button mode="flat">Delete</base-button>
+        <base-button mode="flat" @click="onDelete(id)">Delete</base-button>
       </header>
     </base-card>
     <p>{{ description }}</p>
@@ -16,9 +16,14 @@
 </template>
 
 <script>
-
 export default {
-  props: ['title', 'description', 'link'],
+  props: ['title', 'description', 'link', 'id'],
+  inject: ['deleteResource'],
+  methods: {
+    onDelete(id) {
+      this.deleteResource(id);
+    },
+  },
 };
 </script>
 

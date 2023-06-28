@@ -107,3 +107,11 @@ export default {
     },
  }
 ```
+
+### Provide / Inject property
+
+`1.` Parent-aas zaawal Child bolgon ruu yag daraallaar ni props damjuulahgvgeer Parent rvvgee event damjuulahad ***$emit*** ashigladag.
+
+> https://vuejs.org/guide/components/provide-inject.html#prop-drilling
+
+![Example:](https://vuejs.org/assets/provide-inject.3e0505e4.png)
