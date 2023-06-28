@@ -1,22 +1,25 @@
 <template>
-  <div>
-    <div @click="$emit('close')"></div>
-    <dialog open>
-      <header>
-        <slot name="header"
-          ><h2>{{ title }}</h2></slot
-        >
-      </header>
-      <section>
-        <slot></slot>
-      </section>
-      <menu>
-        <slot name="actions">
-          <!-- <base-button @click="$emit('close')">Close</base-button> -->
-        </slot>
-      </menu>
-    </dialog>
-  </div>
+  <!-- Teleport ni body-iin hamgiin togsgold ni dialog-iig awaachna. DOM structure-iin huwid MODAL ni busad hierarchy-aas tusdaa -->
+  <Teleport to="body">
+    <div>
+      <div @click="$emit('close')"></div>
+      <dialog open>
+        <header>
+          <slot name="header"
+            ><h2>{{ title }}</h2></slot
+          >
+        </header>
+        <section>
+          <slot></slot>
+        </section>
+        <menu>
+          <slot name="actions">
+            <!-- <base-button @click="$emit('close')">Close</base-button> -->
+          </slot>
+        </menu>
+      </dialog>
+    </div>
+  </Teleport>
 </template>
 
 <script>

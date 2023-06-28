@@ -110,8 +110,34 @@ export default {
 
 ### Provide / Inject property
 
-`1.` Parent-aas zaawal Child bolgon ruu yag daraallaar ni props damjuulahgvgeer Parent rvvgee event damjuulahad ***$emit*** ashigladag.
+`1.` Parent-aas zaawal Child bolgon ruu yag daraallaar ni props damjuulahgvgeer provide/inject ashigladag.
 
 > https://vuejs.org/guide/components/provide-inject.html#prop-drilling
 
 ![Example:](https://vuejs.org/assets/provide-inject.3e0505e4.png)
+
+
+```js
+// Parent 
+  provide() {
+    return {
+      resources: this.storedResourcesArr,
+      addResource: this.addResource,
+      deleteResource: this.deleteResource,
+    };
+  },
+```
+
+```js
+// Deep child 
+export default {
+  props: ['title', 'description', 'link', 'id'],
+  inject: ['deleteResource'],
+  methods: {
+    onDelete(id) {
+      this.deleteResource(id);
+    },
+  },
+};
+```
+
