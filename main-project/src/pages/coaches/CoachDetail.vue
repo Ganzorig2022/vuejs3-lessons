@@ -1,7 +1,81 @@
+<!-- https://localhost:3000/coaches/c1 -->
 <template>
   <div>
-    DEtails
-    <router-view></router-view>
-    <router-link to="/coaches/c1/contact">Contact</router-link>
+    <section>
+      <base-card>
+        <h2>{{ fullName }}</h2>
+        <h3>${{ rate }}</h3>
+      </base-card>
+    </section>
+    <section>
+      <base-card>
+        <header>
+          <h2>Interested? Reach out now!</h2>
+          <base-button link :to="contactLink">Contact</base-button>
+        </header>
+        <router-view></router-view>
+      </base-card>
+    </section>
+    <section>
+      <base-card>
+        <base-badge
+          v-for="area in areas"
+          :key="area"
+          :type="area"
+          :title="area"
+        ></base-badge>
+        <p>{{ description }}</p>
+      </base-card>
+    </section>
   </div>
 </template>
+
+<script>
+import { useCoachesStore } from '@/stores/coaches';
+
+export default {
+  // get data from Pinia Store
+  setup() {
+    const coachesStore = useCoachesStore();
+
+    return { coachesStore };
+  },
+
+  // router.js dotor "/coaches/:id, props:true" gesen uchraas end props-oor id irne.
+  props: ['id'],
+  data() {
+    return {
+      selectedCoach: null,
+    };
+  },
+
+  computed: {
+    fullName() {
+      return this.selectedCoach.firstName + ' ' + this.selectedCoach.lastName;
+    },
+    areas() {
+      return this.selectedCoach.areas;
+    },
+    rate() {
+      return this.selectedCoach.hourlyRate;
+    },
+    description() {
+      return this.selectedCoach.description;
+    },
+    contactLink() {
+      return this.$route.path + '/' + this.id + '/contact';
+    },
+  },
+
+  // when this component created, this lifesycle hook will be called.
+  created() {
+    // getters
+    this.selectedCoach = this.coachesStore.totalCoaches.find(
+      (coach) => coach.id === this.id
+    );
+  },
+};
+</script>
+
+<style scoped>
+</style>
