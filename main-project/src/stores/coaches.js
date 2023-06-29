@@ -5,26 +5,7 @@ import { defineStore } from 'pinia'
 export const useCoachesStore = defineStore('coachesStore', {
     //DATA PROPERTIES
     state: () => ({
-        coaches: [
-            {
-                id: 'c1',
-                firstName: 'Maximilian',
-                lastName: 'Schwarzmüller',
-                areas: ['frontend', 'backend', 'career'],
-                description:
-                    "I'm Maximilian and I've worked as a freelance web developer for years. Let me help you become a developer as well!",
-                hourlyRate: 30
-            },
-            {
-                id: 'c2',
-                firstName: 'Julie',
-                lastName: 'Jones',
-                areas: ['frontend', 'career'],
-                description:
-                    'I am Julie and as a senior developer in a big tech company, I can help you get your first job or progress in your current role.',
-                hourlyRate: 30
-            }
-        ],
+        coaches: [],
     }),
 
     //COMPUTED PROPERTIES
@@ -35,8 +16,50 @@ export const useCoachesStore = defineStore('coachesStore', {
 
     //METHODS PROPERTIES
     actions: {
-        increment() {
-            this.count++
+        async registerCoach(coachData) {
+            const userId = coachData.id
+
+            const res = await fetch(`https://vue-http-demo-f00ab-default-rtdb.firebaseio.com/coaches/${userId}.json`, {
+                method: 'PUT',
+                body: JSON.stringify(coachData)
+            })
+
+            if (!res.ok) {
+                const error = new Error(resData.message || 'Failed to fetch!')
+                throw error
+            }
+
         },
+
+        async loadCoaches() {
+            const res = await fetch('https://vue-http-demo-f00ab-default-rtdb.firebaseio.com/coaches.json')
+
+            const resData = await res.json()
+
+
+            if (!res.ok) {
+                const error = new Error(resData.message || 'Failed to fetch!')
+                throw error
+            }
+
+            const coaches = []
+
+            for (const key in resData) {
+                const coach = {
+                    id: key,
+                    firstName: resData[key].firstName,
+                    lastName: resData[key].lastName,
+                    description: resData[key].description,
+                    hourlyRate: resData[key].hourlyRate,
+                    areas: resData[key].areas
+                }
+
+                coaches.push(coach)
+            }
+
+            this.coaches = coaches
+
+
+        }
     },
 })

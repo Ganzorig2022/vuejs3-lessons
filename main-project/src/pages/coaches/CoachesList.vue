@@ -1,17 +1,32 @@
 <!-- https://localhost:3000/coaches -->
 <template>
   <div>
+    <!-- if error is null then it false, if error is not null then true. Double exclamation mark (!!)-->
+    <base-dialog :show="!!error" title="An error occurred" @close="handleError">
+      <p>
+        {{ error }}
+      </p>
+    </base-dialog>
+    <!-- Filter coaches by checkboxes -->
     <section>
       <coach-filter @change-filter="setFilter"></coach-filter>
     </section>
+    <!-- MAIN SECTION -->
     <section>
       <base-card>
         <div>
           <div class="controls">
-            <base-button mode="outline">Refresh</base-button>
-            <base-button link to="/register">Register as a Coach</base-button>
+            <base-button mode="outline" @click="loadCoaches"
+              >Refresh</base-button
+            >
+            <base-button v-if="!isLoading" link to="/register"
+              >Register as a Coach</base-button
+            >
           </div>
-          <ul v-if="hasCoaches">
+          <div v-if="isLoading">
+            <base-spinner> </base-spinner>
+          </div>
+          <ul v-else-if="hasCoaches">
             <coach-item
               v-for="coach in filteredCoaches"
               :key="coach.id"
@@ -50,6 +65,8 @@ export default {
   data() {
     return {
       activeFilters: { frontend: true, backend: true, career: true },
+      isLoading: false,
+      error: null,
     };
   },
 
@@ -75,14 +92,34 @@ export default {
   methods: {
     // store ===> GETTERS
     hasCoaches() {
-      return this.coachesStore.hasCoaches; // true, false
+      return !this.isLoading && this.coachesStore.hasCoaches; // true, false
     },
 
     // emitted
     setFilter(updatedFilters) {
       this.activeFilters = updatedFilters;
-      console.log('activeFilters', this.activeFilters);
     },
+
+    // store ===> ACTIONS
+    async loadCoaches() {
+      try {
+        this.isLoading = true;
+        await this.coachesStore.loadCoaches();
+        this.isLoading = false;
+      } catch (error) {
+        this.error = error.message || 'Something went wrong';
+        this.isLoading = false;
+      }
+    },
+
+    handleError() {
+      this.error = null;
+    },
+  },
+
+  // mounted() hook tuhain component anh render hiigdehed ajillana.
+  mounted() {
+    this.loadCoaches();
   },
 };
 </script>
